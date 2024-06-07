@@ -1,7 +1,6 @@
 
 .vs/Dream/v16/.suo
 .vsconfig
-Assembly-CSharp.csproj
 Build/Dream.exe
 Build/Dream_BurstDebugInformation_DoNotShip/Data/Plugins/x86_64/lib_burst_generated.txt
 Build/Dream_Data/app.info
@@ -24453,7 +24452,6 @@ ProjectSettings/UnityConnectSettings.asset
 ProjectSettings/VersionControlSettings.asset
 ProjectSettings/VFXManager.asset
 ProjectSettings/XRSettings.asset
-Tulpamancy.sln
 UpgradeLog.htm
 UserSettings/EditorUserSettings.asset
 UserSettings/Layouts/CurrentMaximizeLayout.dwlt
