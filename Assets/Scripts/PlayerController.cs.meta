@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 3333528ff8ea2f246939298b4b223688
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Idle: {fileID: 1442970640, guid: 5af1ebc811a836c4895274dab717311b, type: 3}
+  - LookLeft: {fileID: 1059130741, guid: 5af1ebc811a836c4895274dab717311b, type: 3}
+  - LookRight: {fileID: -1995441497, guid: 5af1ebc811a836c4895274dab717311b, type: 3}
+  - LookBack: {fileID: 1333041629, guid: 5af1ebc811a836c4895274dab717311b, type: 3}
+  - LookDown: {fileID: -438284050, guid: 5af1ebc811a836c4895274dab717311b, type: 3}
+  - examineSelfLightOff: {instanceID: 0}
+  - examineSelfLightOn: {instanceID: 0}
+  - roomLogicObject: {instanceID: 0}
+  - customEventHandlerObject: {instanceID: 0}
+  - pointer: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

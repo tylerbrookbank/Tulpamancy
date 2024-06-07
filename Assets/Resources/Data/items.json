@@ -1,0 +1,19 @@
+{items:[
+	{"id": "0",
+	 "ItemSprite": "book",
+	 "InventoryVideo": "OpenBookUpsideDown", 
+	 "name": "Weird Book", 
+	 "description": "This book is weird. Wonder whats inside."},
+	
+	{"id": "1",
+	 "ItemSprite": "book",
+	 "InventoryVideo": "OpenBookUpsideDown", 
+	 "name": "Upside-down Book", 
+	 "description": "No matter what I do, its still opens upside down. Wonder if there is a way I could read this."},
+	 
+	{"id": "2",
+	 "ItemSprite": "cube",
+	 "InventoryVideo": "ExamineCube", 
+	 "name": "Cube", 
+	 "description"; "WTF is this?"}
+]}
