@@ -558,7 +558,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1010166124
 Rigidbody2D:
   serializedVersion: 4
@@ -1022,7 +1022,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1537274073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1240,6 +1240,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 704759348271937337, guid: db25c51a53697b44ea6026835cb8d90c, type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 704759348271937337, guid: db25c51a53697b44ea6026835cb8d90c, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 19b6895ba11b0aa40873309a36be92e9, type: 3}
     - target: {fileID: 8239550145859927023, guid: db25c51a53697b44ea6026835cb8d90c, type: 3}
       propertyPath: m_Name
       value: GameData

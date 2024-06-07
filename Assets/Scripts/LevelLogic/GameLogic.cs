@@ -48,7 +48,7 @@ public class GameLogic : MonoBehaviour
                 Inventory.DropItem(item.id);
                 break;
         }
-    }
+     }
 
     protected void CheckPlayVideo(VideoClip video)
     {

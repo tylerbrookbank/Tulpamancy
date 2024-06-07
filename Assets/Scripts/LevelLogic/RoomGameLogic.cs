@@ -82,6 +82,7 @@ public class RoomGameLogic : GameLogic
         pickupEvent.AddListener(PickUpItem);
         resetRoomStateEvent.AddListener(ResetRoomState);
         changeRoomEvent.AddListener(ChangeRoomState);
+        customEventHandler.useItemEvent.AddListener(UseItem);
         startLeaveRoomTime = 0;
         GameData.Instance.gameDataStruct.screenID = ScreenID.Bedroom;
         switch(GameData.Instance.gameDataStruct.bedroomEventStruct.lightState)
