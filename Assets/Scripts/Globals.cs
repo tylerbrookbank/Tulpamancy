@@ -17,6 +17,7 @@ public static class Globals
     public const int TEQUILLA = 5;
     public const int BEER = 6;
     public const int TEQUILLA_SHOT = 7;
+    public const int BOOK = 8;
     public const int CHARACTER = 1000;
 
     // layers

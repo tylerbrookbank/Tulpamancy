@@ -63,7 +63,7 @@ public class VideoController : MonoBehaviour
             }
             else if (videoClip.name.Equals("CheckList"))
             {
-                roomLogic.roomStateStruct.readList = true;
+                GameData.Instance.gameDataStruct.bedroomEventStruct.readList = true;
             }
         }
     }
@@ -73,13 +73,13 @@ public class VideoController : MonoBehaviour
     {
         bool retVal = true;
 
-        if((video.name.Equals("OpenBookUpsideDown") || video.name.Equals("CheckList")) && roomLogic.roomStateStruct.lightState == LightState.lightOff)
+        if((video.name.Equals("OpenBookUpsideDown") || video.name.Equals("CheckList")) && GameData.Instance.gameDataStruct.bedroomEventStruct.lightState == LightState.lightOff)
         {
             // send event its too dark to read...
             AudioClip tooDark = Resources.Load<AudioClip>("Audio/toodark");
             playAudioClip.Invoke(tooDark);
             retVal = false;
-        } else if(video.name.Equals("LeaveRoom") && (!roomLogic.roomStateStruct.lookedAtBookFirstTime || !roomLogic.roomStateStruct.readList))
+        } else if(video.name.Equals("LeaveRoom") && (!GameData.Instance.gameDataStruct.bedroomEventStruct.lookedAtBookFirstTime || !GameData.Instance.gameDataStruct.bedroomEventStruct.readList))
         {
             AudioClip locked = Resources.Load<AudioClip>("Audio/doorLocked");
             playAudioClip.Invoke(locked);

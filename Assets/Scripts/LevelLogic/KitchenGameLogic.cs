@@ -38,29 +38,27 @@ public class KitchenGameLogic : GameLogic
     public GameObject beer;
     public GameObject tequilla;
     public GameObject backToCounter;
+    public GameObject toBedroom;
 
     public SpriteRenderer backgroundRenderer;
 
     public VideoPlayer videoPlayer;
-    public KitchenGameState kitchenGameState;
 
     // Start is called before the first frame update
     void Start()
     {
         BaseStart();
-        kitchenGameState = new KitchenGameState();
         customEventHandler.changeKitchenStateEvent.AddListener(ChangeState);
         customEventHandler.pickupEvent.AddListener(CheckPickedUpItem);
         customEventHandler.resetRoomStateEvent.AddListener(ResetToCounter);
-        customEventHandler.useItemEvent.AddListener(UseItem);
-        kitchenGameState.state = KitchenState.Counter;
-        gameSaveLoad.LoadGame();
+        GameData.Instance.gameDataStruct.kitchenGameState.state = KitchenState.Counter;
+        GameData.Instance.gameDataStruct.screenID = ScreenID.Kitchen;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        CheckGameState();
         if(leaving && videoPlayer.isPaused)
         {
             //saveLoader.SaveGame();
@@ -74,7 +72,7 @@ public class KitchenGameLogic : GameLogic
                 playedEnter = true;
             }
 
-            if (kitchenGameState.state == KitchenState.backToRoom)
+            if (GameData.Instance.gameDataStruct.kitchenGameState.state == KitchenState.backToRoom)
             {
                 leaving = true;
             }
@@ -86,7 +84,7 @@ public class KitchenGameLogic : GameLogic
     protected void CheckState()
     {
 
-        switch(kitchenGameState.state)
+        switch(GameData.Instance.gameDataStruct.kitchenGameState.state)
         {
             case KitchenState.Counter:
                 backgroundRenderer.sprite = counterBackground;
@@ -95,11 +93,12 @@ public class KitchenGameLogic : GameLogic
                 backToCounter.SetActive(false);
                 shotGlass.SetActive(true);
                 fridge.SetActive(true);
+                toBedroom.SetActive(true);
                 break;
             case KitchenState.Fridge:
-                if(kitchenGameState.pickedUpTaq)
+                if(GameData.Instance.gameDataStruct.kitchenGameState.pickedUpTaq)
                 {
-                    switch (kitchenGameState.beerCount)
+                    switch (GameData.Instance.gameDataStruct.kitchenGameState.beerCount)
                     {
                         case 0:
                             backgroundRenderer.sprite = fridgeNoTaqBackground;
@@ -113,7 +112,7 @@ public class KitchenGameLogic : GameLogic
                     }
                 } else
                 {
-                    switch (kitchenGameState.beerCount)
+                    switch (GameData.Instance.gameDataStruct.kitchenGameState.beerCount)
                     {
                         case 0:
                             backgroundRenderer.sprite = fridgeAllBackground;
@@ -131,6 +130,7 @@ public class KitchenGameLogic : GameLogic
                 backToCounter.SetActive(true);
                 shotGlass.SetActive(false);
                 fridge.SetActive(false);
+                toBedroom.SetActive(false);
                 break;
         }
     }
@@ -149,27 +149,27 @@ public class KitchenGameLogic : GameLogic
                 shotGlass.itemSprite = Resources.Load<Sprite>("Image\\taq");
                 shotGlass.video = Resources.Load<VideoClip>("pickupTaq");
                 Inventory.PickupItem(shotGlass);
-                kitchenGameState.pouredTaq = true;
+                GameData.Instance.gameDataStruct.kitchenGameState.pouredTaq = true;
                 break;
         }
     }
 
     protected void ResetToCounter()
     {
-        kitchenGameState.state = KitchenState.Counter;
+        GameData.Instance.gameDataStruct.kitchenGameState.state = KitchenState.Counter;
     }
 
     protected void CheckPickedUpItem(itemStruct item)
     {
         if(item.id == Globals.TEQUILLA)
         {
-            kitchenGameState.pickedUpTaq = true;
+            GameData.Instance.gameDataStruct.kitchenGameState.pickedUpTaq = true;
         }
     }
 
     protected void ChangeState(KitchenState state)
     {
-        kitchenGameState.state = state;
+        GameData.Instance.gameDataStruct.kitchenGameState.state = state;
     }
 
 }

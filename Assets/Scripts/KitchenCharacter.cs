@@ -27,12 +27,18 @@ public class KitchenCharacter : InteractableFromItemCharacter
     // Update is called once per frame
     void Update()
     {
-        if(!cursorCollider2d.IsTouchingLayers())
+        CheckShouldFlip();
+        if(flipCharacter && !isFlipped)
+        {
+            isFlipped = true;
+            FlipCharacter();
+        }
+        if (!cursorCollider2d.IsTouchingLayers())
         {
             sRend.sprite = idleSprite;
         }
 
-        if (kitchenGameLogic.kitchenGameState.state == KitchenState.Counter)
+        if (GameData.Instance.gameDataStruct.kitchenGameState.state == KitchenState.Counter)
         {
             sRend.enabled = true;
             characterCollider2d.enabled = true;
@@ -42,6 +48,13 @@ public class KitchenCharacter : InteractableFromItemCharacter
             characterCollider2d.enabled = false;
         }
 
+    }
+
+    private void FlipCharacter()
+    {
+        Vector3 newPos = new Vector3(0.39f, 2.26f, -2);
+        transform.Rotate(180, 0, 0);
+        transform.position = newPos;
     }
 
     private void HoveringOverObject(int itemId)

@@ -5,11 +5,10 @@ using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.EventSystems;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : InteractableFromItemCharacter
 {
 
     private SpriteRenderer sRend;
-    private PlayVideoEvent playVideoEvent;
     private RoomGameLogic roomLogic;
     private BoxCollider2D playerCollider2D;
 
@@ -22,8 +21,6 @@ public class PlayerController : MonoBehaviour
     public VideoClip examineSelfLightOff;
     public VideoClip examineSelfLightOn;
     public GameObject roomLogicObject;
-    public GameObject customEventHandlerObject;
-    public CursorPointer pointer;
 
     // Start is called before the first frame update
     void Start()
@@ -39,8 +36,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckShouldFlip();
+        if (flipCharacter && !isFlipped)
+        {
+            isFlipped = true;
+            FlipCharacter();
+        }
         SetCharacterPose();
-        if (roomLogic.roomStateStruct.roomState == RoomState.table || roomLogic.roomStateStruct.roomState == RoomState.menu || roomLogic.roomStateStruct.roomState == RoomState.leavingRoom)
+        if (GameData.Instance.gameDataStruct.bedroomEventStruct.roomState == RoomState.table || GameData.Instance.gameDataStruct.bedroomEventStruct.roomState == RoomState.menu || GameData.Instance.gameDataStruct.bedroomEventStruct.roomState == RoomState.leavingRoom)
         {
             playerCollider2D.enabled = false;
             sRend.enabled = false;
@@ -51,19 +54,12 @@ public class PlayerController : MonoBehaviour
             sRend.enabled = true;
         }
     }
-
-    void OnMouseDown()
+    private void FlipCharacter()
     {
-        if (!pointer.hasObject)
-        {
-            Debug.Log("Start video");
-            if (roomLogic.roomStateStruct.roomState == RoomState.lightOff)
-                playVideoEvent.Invoke(examineSelfLightOff);
-            else
-                playVideoEvent.Invoke(examineSelfLightOn);
-        }
+        Vector3 newPos = new Vector3(-2.07f, 0.57f, -2);
+        transform.Rotate(180, 0, 0);
+        transform.position = newPos;
     }
-
     private void SetCharacterPose()
     {
         bool lookingDown = false;

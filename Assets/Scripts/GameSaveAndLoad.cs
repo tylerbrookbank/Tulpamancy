@@ -19,86 +19,49 @@ public class GameSaveAndLoad : MonoBehaviour
 
     private const string saveGameLocal = "C:\\Users\\Luthien\\Documents\\My Games\\Dream\\";
 
-    public RoomGameLogic room;
+    private GameData gameData;
 
     private void Start()
     {
+        gameData = GameData.Instance;
 
     }
 
-    public void LoadGame()
+    public void LoadGame(string name)
     {
-        using(StreamReader sr = new StreamReader(saveGameLocal + "inventory.json"))
+        using(StreamReader sr = new StreamReader(saveGameLocal + name + ".json"))
         {
-            // only try to load if no items
-            // TODO
-            if(Inventory.itemCount == 0)
+            string json = sr.ReadToEnd();
+            gameData.gameDataStruct = JsonConvert.DeserializeObject<GameDataStruct>(json);
+            foreach (itemStructForSaving itemLoad in gameData.gameDataStruct.items)
             {
-                string json = sr.ReadToEnd();
-                List<itemStructForSaving> inv = JsonConvert.DeserializeObject<List<itemStructForSaving>>(json);
-                foreach (itemStructForSaving itemLoad in inv)
-                {
-                    itemStruct item = new itemStruct();
-                    item.name = itemLoad.name;
-                    item.description = itemLoad.description;
-                    item.itemSprite = Resources.Load<Sprite>("Image/" + itemLoad.itemSprite);
-                    item.video = Resources.Load<VideoClip>("Video/" + itemLoad.video);
-                    item.id = itemLoad.id;
-                    Inventory.PickupItem(item);
-                }
-            }
-        }
-
-        // load bedroom
-        if (room != null)
-        {
-            using (StreamReader sr = new StreamReader(saveGameLocal + "roomState.json"))
-            {
-                string json = sr.ReadToEnd();
-                BedroomEventStruct roomSave = JsonConvert.DeserializeObject<BedroomEventStruct>(json);
-                room.roomStateStruct = roomSave;
-                switch (room.roomStateStruct.lightState)
-                {
-                    case LightState.lightOff:
-                        room.roomStateStruct.roomState = RoomState.lightOff;
-                        break;
-                    case LightState.lightOn:
-                        room.roomStateStruct.roomState = RoomState.lightOn;
-                        break;
-                }
+                itemStruct item = new itemStruct();
+                item.name = itemLoad.name;
+                item.id = itemLoad.id;
+                item.description = itemLoad.description;
+                item.itemSprite = Resources.Load<Sprite>("Image\\"+itemLoad.itemSprite);
+                item.video = Resources.Load<VideoClip>("Video\\"+itemLoad.video);
+                Inventory.PickupItem(item);
             }
         }
     }
 
     public void SaveGame()
     {
-        List<itemStructForSaving> saveInv = new List<itemStructForSaving>();
-
-        foreach (itemStruct item in Inventory.items)
+        for(int i=0; i<Inventory.itemCount; i++)
         {
-            if (item.name != null)
-            {
-                itemStructForSaving saveItem = new itemStructForSaving();
-                saveItem.name = item.name;
-                saveItem.description = item.description;
-                saveItem.itemSprite = item.itemSprite.name;
-                saveItem.video = item.video.name;
-                saveItem.id = item.id;
-                saveInv.Add(saveItem);
-            }
+            itemStructForSaving saveItem = new itemStructForSaving();
+            saveItem.id = Inventory.items[i].id;
+            saveItem.name = Inventory.items[i].name;
+            saveItem.description = Inventory.items[i].description;
+            saveItem.itemSprite = Inventory.items[i].itemSprite.name;
+            saveItem.video = Inventory.items[i].video.name;
+            gameData.gameDataStruct.items.Add(saveItem);
         }
 
-        using (StreamWriter sr = new StreamWriter(saveGameLocal + "inventory.json"))
+        using (StreamWriter sw = new StreamWriter(saveGameLocal + gameData.gameDataStruct.Name + ".json"))
         {
-            sr.Write(JsonConvert.SerializeObject(saveInv));
-        }
-
-        if(room != null)
-        {
-            using (StreamWriter sr = new StreamWriter(saveGameLocal + "roomState.json"))
-            {
-                sr.Write(JsonConvert.SerializeObject(room.roomStateStruct));
-            }
+            sw.Write(JsonConvert.SerializeObject(gameData.gameDataStruct));
         }
         
     }

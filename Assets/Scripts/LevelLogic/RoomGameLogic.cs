@@ -19,8 +19,8 @@ public enum RoomState
 // for items that require light
 public enum LightState
 {
-    lightOn,
-    lightOff
+    lightOff,
+    lightOn
 }
 
 public struct BedroomEventStruct
@@ -36,7 +36,7 @@ public struct BedroomEventStruct
     public bool hasSeenGhost { get; set; }
 }
 
-public class RoomGameLogic : MonoBehaviour
+public class RoomGameLogic : GameLogic
 {
 
     private ChangeRoomStateEvent changeRoomEvent;
@@ -47,9 +47,6 @@ public class RoomGameLogic : MonoBehaviour
     private float startLeaveRoomTime;
     private bool playedOpening;
 
-    public CustomEventHandler customEventHandlerObject;
-    public BedroomEventStruct roomStateStruct;
-
     public SpriteRenderer background;
     public Sprite lightOffBackground;
     public Sprite lightOnBackground;
@@ -58,8 +55,8 @@ public class RoomGameLogic : MonoBehaviour
     public Sprite tableNoBookNoCubeBackground;
     public Sprite tableNoCubeBackground;
     public Sprite leaveRoomBackground;
-    public GameSaveAndLoad saveLoader;
     public VideoClip EnterFromHallwayClip;
+    public VideoPlayer vp;
 
     public GameObject lightOff;
     public GameObject lightOn;
@@ -77,36 +74,43 @@ public class RoomGameLogic : MonoBehaviour
     void Start()
     {
         playedOpening = false;
-        changeRoomEvent = customEventHandlerObject.changeRoomStateEvent;
-        resetRoomStateEvent = customEventHandlerObject.resetRoomStateEvent;
-        pickupEvent = customEventHandlerObject.pickupEvent;
-        playAudioClip = customEventHandlerObject.playAudioClip;
-        playAudioBackground = customEventHandlerObject.playAudioBackground;
+        changeRoomEvent = customEventHandler.changeRoomStateEvent;
+        resetRoomStateEvent = customEventHandler.resetRoomStateEvent;
+        pickupEvent = customEventHandler.pickupEvent;
+        playAudioClip = customEventHandler.playAudioClip;
+        playAudioBackground = customEventHandler.playAudioBackground;
         pickupEvent.AddListener(PickUpItem);
         resetRoomStateEvent.AddListener(ResetRoomState);
         changeRoomEvent.AddListener(ChangeRoomState);
-        roomStateStruct.roomState = RoomState.lightOff;
-        roomStateStruct.lightState = LightState.lightOff;
         startLeaveRoomTime = 0;
-        saveLoader.LoadGame();
+        GameData.Instance.gameDataStruct.screenID = ScreenID.Bedroom;
+        switch(GameData.Instance.gameDataStruct.bedroomEventStruct.lightState)
+        {
+            case LightState.lightOff:
+                GameData.Instance.gameDataStruct.bedroomEventStruct.roomState = RoomState.lightOff;
+            break;
+            case LightState.lightOn:
+                GameData.Instance.gameDataStruct.bedroomEventStruct.roomState = RoomState.lightOn;
+            break;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        CheckGameState();
         if (!playedOpening)
         {
             playedOpening = true;
-            customEventHandlerObject.playVideoEvent.Invoke(EnterFromHallwayClip);
+            customEventHandler.playVideoEvent.Invoke(EnterFromHallwayClip);
         }
-        CheckDoorState();
         CheckRoomState();
 
     }
 
     private void CheckRoomState()
     {
-        switch (roomStateStruct.roomState)
+        switch (GameData.Instance.gameDataStruct.bedroomEventStruct.roomState)
         {
             case RoomState.lightOff:
                 background.sprite = lightOffBackground;
@@ -119,7 +123,7 @@ public class RoomGameLogic : MonoBehaviour
                 list.SetActive(true);
                 bookObject.SetActive(false);
                 cubeObject.SetActive(false);
-                roomStateStruct.lightState = LightState.lightOff;
+                GameData.Instance.gameDataStruct.bedroomEventStruct.lightState = LightState.lightOff;
                 break;
             case RoomState.lightOn:
                 background.sprite = lightOnBackground;
@@ -132,17 +136,17 @@ public class RoomGameLogic : MonoBehaviour
                 list.SetActive(true);
                 bookObject.SetActive(false);
                 cubeObject.SetActive(false);
-                roomStateStruct.lightState = LightState.lightOn;
+                GameData.Instance.gameDataStruct.bedroomEventStruct.lightState = LightState.lightOn;
                 break;
             case RoomState.table:
                 
-                if(roomStateStruct.pickedUpBook && !roomStateStruct.pickedUpCube)
+                if(GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpBook && !GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpCube)
                 {
                     background.sprite = tableNoBookBackground;
-                } else if(!roomStateStruct.pickedUpBook && roomStateStruct.pickedUpCube)
+                } else if(!GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpBook && GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpCube)
                 {
                     background.sprite = tableNoCubeBackground;
-                } else if(roomStateStruct.pickedUpBook && roomStateStruct.pickedUpCube)
+                } else if(GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpBook && GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpCube)
                 {
                     background.sprite = tableNoBookNoCubeBackground;
                 }
@@ -156,11 +160,11 @@ public class RoomGameLogic : MonoBehaviour
                 door.SetActive(false);
                 table.SetActive(false);
                 list.SetActive(false);
-                if(!roomStateStruct.pickedUpCube)
+                if(!GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpCube)
                     cubeObject.SetActive(true);
                 else
                     cubeObject.SetActive(false);
-                if (!roomStateStruct.pickedUpBook)
+                if (!GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpBook)
                     bookObject.SetActive(true);
                 else
                     bookObject.SetActive(false);
@@ -190,9 +194,9 @@ public class RoomGameLogic : MonoBehaviour
 
     public void CheckDoorState()
     {
-        if(!roomStateStruct.doorUnlocked && roomStateStruct.lookedAtBookFirstTime && roomStateStruct.readList)
+        if(!GameData.Instance.gameDataStruct.bedroomEventStruct.doorUnlocked && GameData.Instance.gameDataStruct.bedroomEventStruct.lookedAtBookFirstTime && GameData.Instance.gameDataStruct.bedroomEventStruct.readList && !vp.isPlaying)
         {
-            roomStateStruct.doorUnlocked = true;
+            GameData.Instance.gameDataStruct.bedroomEventStruct.doorUnlocked = true;
             AudioClip clip = Resources.Load<AudioClip>("Audio/unlockDoor");
             playAudioClip.Invoke(clip);
         }
@@ -203,13 +207,13 @@ public class RoomGameLogic : MonoBehaviour
         switch (item.id)
         {
             case 0:
-                roomStateStruct.pickedUpBook = true;
+                GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpBook = true;
                 break;
             case 1:
-                roomStateStruct.lookedAtBookFirstTime = true;
+                GameData.Instance.gameDataStruct.bedroomEventStruct.lookedAtBookFirstTime = true;
                 break;
             case 2:
-                roomStateStruct.pickedUpCube = true;
+                GameData.Instance.gameDataStruct.bedroomEventStruct.pickedUpCube = true;
                 break;
         }
     }
@@ -217,20 +221,20 @@ public class RoomGameLogic : MonoBehaviour
     private void ResetRoomState()
     {
         Debug.Log("reset state");
-        roomStateStruct.roomState = roomStateStruct.lastState;
+        GameData.Instance.gameDataStruct.bedroomEventStruct.roomState = GameData.Instance.gameDataStruct.bedroomEventStruct.lastState;
     }
 
     private void ChangeRoomState(RoomState newState)
     {
-        if(roomStateStruct.roomState != RoomState.menu)
-            roomStateStruct.lastState = roomStateStruct.roomState;
+        if(GameData.Instance.gameDataStruct.bedroomEventStruct.roomState != RoomState.menu)
+            GameData.Instance.gameDataStruct.bedroomEventStruct.lastState = GameData.Instance.gameDataStruct.bedroomEventStruct.roomState;
         if(newState == RoomState.backToRoom)
         {
-            roomStateStruct.roomState = (roomStateStruct.lightState == LightState.lightOn) ? RoomState.lightOn : RoomState.lightOff;
+            GameData.Instance.gameDataStruct.bedroomEventStruct.roomState = (GameData.Instance.gameDataStruct.bedroomEventStruct.lightState == LightState.lightOn) ? RoomState.lightOn : RoomState.lightOff;
         }
         else
         {
-            roomStateStruct.roomState = newState;
+            GameData.Instance.gameDataStruct.bedroomEventStruct.roomState = newState;
         }
     }
 

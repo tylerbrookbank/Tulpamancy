@@ -7,7 +7,6 @@ public class BeerItemObject : ItemObject
 {
 
     public VideoClip pickupSecondBeer;
-    public KitchenGameLogic kitchenGameLogic;
     bool pickedupFirst;
 
     // Start is called before the first frame update
@@ -25,7 +24,7 @@ public class BeerItemObject : ItemObject
 
     protected override void OnMouseDown()
     {
-        kitchenGameLogic.kitchenGameState.beerCount++;
+        GameData.Instance.gameDataStruct.kitchenGameState.beerCount++;
         if (!pointer.hasObject)
         {
             if (!pickedupFirst)

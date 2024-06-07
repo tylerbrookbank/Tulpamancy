@@ -8,6 +8,8 @@ public class InteractableFromItemCharacter : InteractableFromItem
 
     public int itemId2;
     public VideoClip itemInteractClip2;
+    protected bool flipCharacter;
+    protected bool isFlipped;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +22,21 @@ public class InteractableFromItemCharacter : InteractableFromItem
     {
         
     }
-
+     protected void CheckShouldFlip()
+    {
+        if (GameData.Instance.gameDataStruct.drankShot && GameData.Instance.gameDataStruct.drankBeerCount == 2)
+        {
+            flipCharacter = true;
+            Inventory.DropItem(Globals.UPSIDEDOWN_BOOK);
+            itemStruct book = new itemStruct();
+            book.id = Globals.BOOK;
+            book.name = "Book";
+            book.description = "Maybe I can read this now that I'm upside down too.";
+            book.itemSprite = Resources.Load<Sprite>("Image\\book");
+            book.video = Resources.Load<VideoClip>("Video\\openBook");
+            Inventory.PickupItem(book);
+        }
+    }
     protected override void OnMouseDown()
     {
         if (!pointer.hasObject)
